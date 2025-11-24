@@ -33,8 +33,8 @@ public class PaiementController {
     public ResponseEntity<?> getPaiementById(@PathVariable int id) {
 
         return paiementRepository.findById(id)
-                .map(paiement -> ResponseEntity.ok().body(paiement))
-                .orElse(ResponseEntity.status(400).body("Paiement introuvable !"));
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // POST create paiement

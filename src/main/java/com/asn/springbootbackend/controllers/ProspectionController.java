@@ -78,7 +78,8 @@ public class ProspectionController {
             Prospection updated = prospectionRepository.save(prospection);
             return ResponseEntity.ok(updated);
 
-        }).orElse(ResponseEntity.badRequest().body("Prospection introuvable !"));
+        }).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // DELETE prospection
