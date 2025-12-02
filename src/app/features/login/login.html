@@ -1,0 +1,30 @@
+<div class="container">
+
+  <header class="professional-header">
+    <img src="/assets/images/logo.png" width="30px"  height="30px" >
+    <div class="form-group"><br>
+      <label for="email">Entrez votre email</label>
+      <input type="email" id="email" [(ngModel)]="email" placeholder="exemple@email.com" required>
+    </div>
+  </header>
+
+  <div class="form-group">
+    <label for="password">Entrez votre mot de passe</label>
+    <input type="password" id="password" [(ngModel)]="password" placeholder="••••••••" required>
+  </div>
+
+  <button class="btn-connexion" (click)="handleConnexion()">
+    Se connecter
+  </button>
+  
+  <a href="#" (click)="forgotPassword()" class="forgot-password-link">Mot de passe oublié ?</a>
+   
+  <div *ngIf="message" class="message" [ngClass]="messageType">
+    {{ message }}
+  </div>
+</div>
+
+
+<footer class="footer">
+  © 2025 ASN TECHNOLOGY. Tous droits réservés.
+</footer>

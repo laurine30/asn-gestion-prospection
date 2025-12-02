@@ -1,0 +1,41 @@
+<div class="dashboard-container">
+  <h1>Tableau de bord</h1>
+  
+  <!-- Cartes de statistiques -->
+  <div class="stats">
+    <div class="card" *ngFor="let stat of stats" [style.border-top-color]="stat.color">
+      <h3>{{ stat.title }}</h3>
+      <p [style.color]="stat.color">{{ stat.value }}</p>
+    </div>
+  </div>
+
+  <!-- Tableau des appels d'offres récents -->
+  <div class="table-section">
+    <h2>Appels d'offres récents</h2>
+    <table class="ao-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Titre</th>
+          <th>Client</th>
+          <th>Statut</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ao of recentAO">
+          <td>{{ ao.id }}</td>
+          <td>{{ ao.titre }}</td>
+          <td>{{ ao.client }}</td>
+          <td>
+            <span class="statut-badge" [style.background-color]="getStatutColor(ao.statut) + '20'" 
+                  [style.color]="getStatutColor(ao.statut)">
+              {{ ao.statut }}
+            </span>
+          </td>
+          <td>{{ ao.date }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
