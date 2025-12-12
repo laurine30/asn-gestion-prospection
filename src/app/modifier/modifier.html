@@ -1,0 +1,149 @@
+<div class="page-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h1>Modifier une Prospection</h1>
+      <p>Mettre à jour les informations de la prospection sélectionnée</p>
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success">
+      ✓ Prospection modifiée avec succès !
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="update()">
+
+      <!-- Informations Client -->
+      <div class="form-section">
+        <h3>Informations Client</h3>
+
+        <div class="form-group">
+          <label for="client">Nom du client <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="client"
+            formControlName="client"
+            placeholder="Ex: Entreprise ABC"
+            [class.error]="hasError('client')"
+          />
+          <span class="error-message" *ngIf="hasError('client')">
+            Le nom du client est requis (minimum 2 caractères)
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="domaine">Domaine d'activité <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="domaine"
+            formControlName="domaine"
+            placeholder="Ex: Tech, Finance, Santé..."
+            [class.error]="hasError('domaine')"
+          />
+          <span class="error-message" *ngIf="hasError('domaine')">
+            Le domaine d'activité est requis
+          </span>
+        </div>
+      </div>
+
+      <!-- Détails de la prospection -->
+      <div class="form-section">
+        <h3>Détails de la Prospection</h3>
+
+        <div class="form-group">
+          <label for="besoin">Besoin identifié <span class="required">*</span></label>
+          <textarea 
+            id="besoin"
+            formControlName="besoin"
+            rows="4"
+            placeholder="Décrivez les besoins du client..."
+            [class.error]="hasError('besoin')"
+          ></textarea>
+          <span class="error-message" *ngIf="hasError('besoin')">
+            Le besoin doit contenir au moins 10 caractères
+          </span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="type">Type de prospection <span class="required">*</span></label>
+            <select 
+              id="type"
+              formControlName="type"
+              [class.error]="hasError('type')"
+            >
+              <option value="">Sélectionnez un type</option>
+              <option *ngFor="let type of typesProspection" [value]="type.value">
+                {{ type.label }}
+              </option>
+            </select>
+            <span class="error-message" *ngIf="hasError('type')">
+              Le type est requis
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="statut">Statut <span class="required">*</span></label>
+            <select id="statut" formControlName="statut">
+              <option *ngFor="let statut of statuts" [value]="statut.value">
+                {{ statut.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dateContact">Date de contact <span class="required">*</span></label>
+            <input 
+              type="date" 
+              id="dateContact"
+              formControlName="dateContact"
+              [class.error]="hasError('dateContact')"
+            />
+            <span class="error-message" *ngIf="hasError('dateContact')">
+              La date de contact est requise
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="montantEstime">Montant estimé (€)</label>
+            <input 
+              type="number" 
+              id="montantEstime"
+              formControlName="montantEstime"
+              placeholder="0"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Priorité</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" formControlName="priorite" value="haute" />
+              <span class="radio-label haute">🔴 Haute</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" formControlName="priorite" value="moyenne" />
+              <span class="radio-label moyenne">🟡 Moyenne</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" formControlName="priorite" value="basse" />
+              <span class="radio-label basse">🟢 Basse</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="goBack()">
+          Annuler
+        </button>
+        <button type="submit" class="btn-primary">
+          Modifier la prospection
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+

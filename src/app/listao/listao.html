@@ -1,0 +1,157 @@
+<div class="prospection-container">
+  <h2 class="title">Liste des Appels d'Offres</h2>
+
+  <!-- BARRE DE RECHERCHE + BOUTON -->
+  <div class="top-bar">
+    <input 
+      type="text" 
+      placeholder="Rechercher par titre, statut ou date..." 
+      [(ngModel)]="searchTerm" 
+      (input)="applyFilter()"
+    />
+    <button class="btn-primary" (click)="createAppelOffre()">
+      <i class="fas fa-plus"></i> Nouvel Appel d'Offre
+    </button>
+  </div>
+
+  <!-- MESSAGE DE SUCCÈS/ERREUR -->
+  <div *ngIf="message" class="message success-message">{{ message }}</div>
+
+  <!-- TABLEAU DES APPELS D'OFFRES -->
+  <table class="prospection-table" *ngIf="filteredAppelOffres().length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Titre</th>
+        <th>Date Publication</th>
+        <th>Date Réponse</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ao of filteredAppelOffres()">
+        <td>{{ ao.idAo }}</td>
+        <td>{{ ao.titre }}</td>
+        <td>{{ ao.datePublic }}</td>
+        <td>{{ ao.dateRponse || '-' }}</td>
+        <td [style.color]="getStatutColor(ao.statut)">
+          <strong>{{ ao.statut }}</strong>
+        </td>
+
+        <td class="actions">
+          <button class="icon-btn edit" (click)="editAppelOffre(ao)" title="Modifier">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+
+          <button class="icon-btn delete" (click)="confirmDelete(ao)" title="Supprimer">
+            <i class="bi bi-trash"></i>
+          </button>
+
+          <button class="icon-btn view" (click)="viewDetails(ao)" title="Détails">
+            <i class="bi bi-eye"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- MESSAGE SI AUCUN RÉSULTAT -->
+  <div *ngIf="filteredAppelOffres().length === 0" class="no-results">
+    Aucun appel d'offre trouvé.
+  </div>
+
+  <!-- MODAL FORMULAIRE -->
+  <div *ngIf="showForm" class="form-modal" (click)="closeModalOnBackdrop($event)">
+    <div class="form-card" (click)="$event.stopPropagation()">
+      
+      <!-- Bouton fermer X -->
+      <button class="close-btn" (click)="closeForm()" type="button">×</button>
+
+      <div class="form-header">
+        <h1>{{ isEditMode ? 'Modifier l\'Appel d\'Offre' : 'Nouvel Appel d\'Offre' }}</h1>
+        <p>{{ isEditMode ? 'Modifiez les informations de l\'appel d\'offre' : 'Enregistrez un nouvel appel d\'offre' }}</p>
+      </div>
+
+      <!-- Message de succès dans le formulaire -->
+      <div *ngIf="message" class="success-message">
+        ✓ {{ message }}
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submitAppelOffre()">
+        
+        <!-- Titre -->
+        <div class="form-group">
+          <label for="titre">Titre <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="titre" 
+            formControlName="titre" 
+            placeholder="Ex: Construction d'un bâtiment administratif"
+            [class.error]="hasError('titre')"
+          />
+          <span class="error-message" *ngIf="hasError('titre')">
+            Le titre est requis (minimum 3 caractères)
+          </span>
+        </div>
+
+        <!-- Date de publication et Date de réponse -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="datePublic">Date de publication <span class="required">*</span></label>
+            <input 
+              type="date" 
+              id="datePublic" 
+              formControlName="datePublic"
+              [class.error]="hasError('datePublic')"
+            />
+            <span class="error-message" *ngIf="hasError('datePublic')">
+              La date de publication est requise
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="dateRponse">Date de réponse</label>
+            <input 
+              type="date" 
+              id="dateRponse" 
+              formControlName="dateRponse"
+            />
+          </div>
+        </div>
+
+        <!-- Statut -->
+        <div class="form-group">
+          <label for="statut">Statut <span class="required">*</span></label>
+          <select id="statut" formControlName="statut">
+            <option *ngFor="let statut of statuts" [value]="statut.value">
+              {{ statut.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeForm()">Annuler</button>
+          <button type="submit" class="btn-primary">
+            {{ isEditMode ? 'Mettre à jour' : 'Créer l\'appel d\'offre' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL SUPPRESSION -->
+  <div class="delete-modal" *ngIf="showDeleteConfirm">
+    <div class="delete-box">
+      <h3>Confirmer la suppression ?</h3>
+      <p>Voulez-vous vraiment supprimer cet appel d'offre ?</p>
+
+      <div class="delete-actions">
+        <button class="btn-cancel" (click)="cancelDelete()">Annuler</button>
+        <button class="btn-delete" (click)="deleteAppelOffre()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>

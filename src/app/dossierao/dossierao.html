@@ -1,0 +1,92 @@
+<div class="page-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h1>Créer un Dossier de Réponse</h1>
+      <p>Enregistrez un dossier pour répondre à un appel d'offre</p>
+    </div>
+
+    <!-- Message de succès/erreur -->
+    <div *ngIf="message" [class]="message.includes('succès') ? 'success-message' : 'error-message'">
+      {{ message }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #dossierForm="ngForm">
+
+      <!-- Sélection de l'Appel d'Offre -->
+      <div class="form-group">
+        <label for="appelOffre">Appel d'Offre <span class="required">*</span></label>
+        <select 
+          id="appelOffre" 
+          [(ngModel)]="dossier.referenceAo" 
+          name="referenceAo" 
+          (change)="onAppelOffreChange($event)"
+          required
+          [class.error]="!dossier.referenceAo && dossierForm.submitted"
+        >
+          <option value="">-- Sélectionnez un appel d'offre --</option>
+          <option *ngFor="let ao of appelsOffres" [value]="ao.idAo">
+            {{ ao.titre }} ({{ ao.datePublic }})
+          </option>
+        </select>
+        <span 
+          *ngIf="!dossier.referenceAo && dossierForm.submitted" 
+          class="error-message"
+        >
+          Veuillez sélectionner un appel d'offre
+        </span>
+      </div>
+
+      <!-- Intitulé de l'AO (rempli automatiquement) -->
+      <div class="form-group">
+        <label for="intitule">Intitulé de l'AO</label>
+        <input 
+          type="text" 
+          id="intitule" 
+          [(ngModel)]="dossier.intituleAo" 
+          name="intituleAo" 
+          readonly
+          placeholder="Sera rempli automatiquement"
+        >
+      </div>
+
+      <!-- Documents requis -->
+      <div class="form-group">
+        <label for="documents">Documents requis</label>
+        <input 
+          type="file" 
+          id="documents" 
+          (change)="onFileChange($event)" 
+          multiple
+          accept=".pdf,.doc,.docx,.xls,.xlsx"
+        >
+        <small class="form-hint">
+          Formats acceptés : PDF, Word, Excel. Vous pouvez sélectionner plusieurs fichiers.
+        </small>
+        <div *ngIf="selectedFiles.length > 0" class="selected-files">
+          <p><strong>Fichiers sélectionnés :</strong></p>
+          <ul>
+            <li *ngFor="let file of selectedFiles">{{ file.name }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button 
+          type="button" 
+          class="btn-secondary" 
+          (click)="dossier = { referenceAo: '', intituleAo: '' }; selectedFiles = []"
+        >
+          Réinitialiser
+        </button>
+        <button 
+          type="submit" 
+          class="btn-primary" 
+          [disabled]="!dossierForm.form.valid"
+        >
+          Enregistrer le dossier
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

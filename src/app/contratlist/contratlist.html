@@ -1,0 +1,228 @@
+<div class="contrat-container">
+  <!-- TITRE -->
+  <h2 class="title">Liste des Contrats</h2>
+
+  <!-- BARRE DE RECHERCHE ET BOUTON -->
+  <div class="top-bar">
+    <input 
+      type="text" 
+      placeholder="Rechercher par client, montant ou statut..." 
+      [(ngModel)]="searchTerm" 
+      (input)="applyFilter()"
+      class="search-input"
+    />
+    <button class="btn-primary" (click)="openCreateModal()">
+      <i class="fas fa-plus-circle"></i> Nouveau Contrat
+    </button>
+  </div>
+
+  <!-- TABLEAU DES CONTRATS - CORRIGÉ SELON L'ENTITÉ SPRING -->
+  <div class="table-container">
+    <table class="contrat-table" *ngIf="filteredContrats.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Client</th>
+          <th>Date Signature</th>
+          <th>Montant</th>
+          <th>Statut</th>
+          
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let contrat of filteredContrats">
+          <td class="contrat-id">#{{ contrat.idContrat }}</td>
+          <td class="client-cell">{{ contrat.clientNom || 'N/A' }}</td>
+          <td class="date-cell">{{ formatDate(contrat.dateSignature) }}</td>
+          <td class="montant-cell">{{ contrat.montantContrat | number:'1.0-2' }} €</td>
+          <td>
+            <span class="statut-badge" [style.background]="getStatutColor(contrat.statutContrat)">
+              {{ getStatutLabel(contrat.statutContrat) }}
+            </span>
+          </td>
+         
+          
+          <td class="actions-cell">
+            <button class="action-btn view" (click)="openDetailsModal(contrat)" title="Voir détails">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="action-btn edit" (click)="openEditModal(contrat)" title="Modifier">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="action-btn delete" (click)="openDeleteModal(contrat)" title="Supprimer">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div *ngIf="filteredContrats.length === 0 && !loading" class="no-data">
+      <i class="fas fa-file-contract"></i>
+      <p>Aucun contrat trouvé</p>
+      <button class="btn-primary" (click)="openCreateModal()" style="margin-top: 1rem;">
+        <i class="fas fa-plus-circle"></i> Créer votre premier contrat
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL FORMULAIRE (CRÉATION/MODIFICATION) - CORRIGÉ -->
+  <div *ngIf="showFormModal" class="modal-overlay" (click)="closeModals()">
+    <div class="modal-content form-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditMode ? 'Modifier le Contrat' : 'Nouveau Contrat' }}</h3>
+        <button class="close-btn" (click)="closeModals()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Message d'erreur -->
+        <div *ngIf="errorMessage" class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+        </div>
+        
+        <form (ngSubmit)="submitForm()" #contratForm="ngForm">
+          <div class="form-grid">
+            <!-- Date de signature - OBLIGATOIRE -->
+            <div class="form-group">
+              <label for="dateSignature">Date de signature <span class="required">*</span></label>
+              <input type="date" id="dateSignature" [(ngModel)]="formData.dateSignature" 
+                     name="dateSignature" required>
+            </div>
+
+            <!-- Client - OBLIGATOIRE -->
+            <div class="form-group">
+              <label for="clientId">Client <span class="required">*</span></label>
+              <select id="clientId" [(ngModel)]="formData.clientId" name="clientId" required>
+                <option value="">-- Sélectionnez un client --</option>
+                <option *ngFor="let client of clients" [value]="client.idClient">
+                  {{ client.typeClient === 'PHYSIQUE' ? 
+                    (client.nom + ' ' + (client.prenom || '')) : 
+                    client.nomEntreprise 
+                  }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Conditions - OBLIGATOIRE -->
+            <div class="form-group">
+              <label for="conditions">Conditions <span class="required">*</span></label>
+              <textarea id="conditions" [(ngModel)]="formData.conditions" name="conditions" 
+                        rows="3" required placeholder="Conditions du contrat..."></textarea>
+            </div>
+
+            <!-- Montant - OBLIGATOIRE -->
+            <div class="form-group">
+              <label for="montantContrat">Montant (Fcfa) <span class="required">*</span></label>
+              <input type="number" id="montantContrat" [(ngModel)]="formData.montantContrat" 
+                     name="montantContrat" min="0" step="0.01" required>
+            </div>
+
+            <!-- Statut - OBLIGATOIRE -->
+            <div class="form-group">
+              <label for="statutContrat">Statut <span class="required">*</span></label>
+              <select id="statutContrat" [(ngModel)]="formData.statutContrat" name="statutContrat" required>
+                <option *ngFor="let statut of statuts" [value]="statut.value">
+                  {{ statut.label }}
+                </option>
+              </select>
+            </div>
+
+           
+
+          <!-- Actions du formulaire -->
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="closeModals()">
+              Annuler
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="contratForm.invalid || !formData.clientId">
+              {{ isEditMode ? 'Mettre à jour' : 'Créer le contrat' }}
+            </button>
+          </div>
+       
+      </div>
+    
+  
+
+  <!-- MODAL DÉTAILS - CORRIGÉ -->
+  <div *ngIf="showDetailsModal && currentContrat" class="modal-overlay" (click)="closeModals()">
+    <div class="modal-content details-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Détails du Contrat</h3>
+        <button class="close-btn" (click)="closeModals()">
+         <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- En-tête du contrat -->
+        <div class="contrat-header">
+          <div class="contrat-title">
+            <h4>Contrat #{{ currentContrat.idContrat }}</h4>
+            <span class="statut-badge" [style.background]="getStatutColor(currentContrat.statutContrat)">
+              {{ getStatutLabel(currentContrat.statutContrat) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Informations principales -->
+        <div class="details-section">
+          <h5><i class="fas fa-info-circle"></i> Informations principales</h5>
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Client:</span>
+              <span class="detail-value">{{ currentContrat.clientNom || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Date de signature:</span>
+              <span class="detail-value">{{ formatDate(currentContrat.dateSignature) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Montant:</span>
+              <span class="detail-value montant">{{ currentContrat.montantContrat | number:'1.0-2' }} FCFA</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Statut:</span>
+              <span class="detail-value">
+                <span class="statut-badge" [style.background]="getStatutColor(currentContrat.statutContrat)">
+                  {{ getStatutLabel(currentContrat.statutContrat) }}
+                </span>
+              </span>
+            </div>
+          
+
+        <!-- Conditions -->
+        <div class="details-section" *ngIf="currentContrat.conditions">
+          <h5><i class="fas fa-file-contract"></i> Conditions</h5>
+          <div class="conditions-box">
+            {{ currentContrat.conditions }}
+          </div>
+        </div>
+
+
+  <!-- MODAL SUPPRESSION -->
+  <div *ngIf="showDeleteModal && contratToDelete" class="modal-overlay" (click)="closeModals()">
+    <div class="modal-content delete-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Confirmer la suppression</h3>
+      </div>
+      
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir supprimer le contrat <strong>#{{ contratToDelete.idContrat }}</strong> ?</p>
+        <p class="warning-text">Cette action est irréversible et supprimera également toutes les factures associées.</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeModals()">
+          Annuler
+        </button>
+        <button class="btn-danger" (click)="confirmDelete()">
+          <i class="fas fa-trash"></i> Supprimer définitivement
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

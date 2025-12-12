@@ -1,0 +1,670 @@
+/* CONTENEUR PRINCIPAL */
+.prospection-container {
+  max-width: 1200px;
+  margin: 80px auto 2rem;
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+}
+
+/* TITRE PRINCIPAL */
+.title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* BARRE DE RECHERCHE + BOUTON */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.top-bar input {
+  flex: 1;
+  max-width: 400px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #d1d9e6;
+  transition: all 0.3s;
+}
+
+.top-bar input:focus {
+  outline: none;
+  border-color: #42a5f5;
+  box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.1);
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #42a5f5, #1e88e5);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #1e88e5, #1565c0);
+  box-shadow: 0 4px 12px rgba(66, 165, 245, 0.3);
+  transform: translateY(-2px);
+}
+
+/* MESSAGES */
+.message {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  animation: slideDown 0.3s ease-out;
+}
+
+.success-message {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* TABLEAU */
+.prospection-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.prospection-table th, .prospection-table td {
+  text-align: left;
+  padding: 1rem;
+}
+
+.prospection-table th {
+  background-color: #f0f4fa;
+  font-weight: 600;
+  border-bottom: 2px solid #e2e8f0;
+  color: #34495e;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.prospection-table tbody tr {
+  border-bottom: 1px solid #f0f0f5;
+  transition: background-color 0.2s;
+}
+
+.prospection-table tbody tr:hover {
+  background-color: #f7faff;
+}
+
+.prospection-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.prospection-table td.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* BOUTONS ACTIONS */
+.icon-btn {
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.icon-btn:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.icon-btn.edit {
+  background-color: #ffc107;
+}
+
+.icon-btn.edit:hover {
+  background-color: #ffb300;
+}
+
+.icon-btn.delete {
+  background-color: #ef5350;
+}
+
+.icon-btn.delete:hover {
+  background-color: #e53935;
+}
+
+.icon-btn.view {
+  background-color: #42a5f5;
+}
+
+.icon-btn.view:hover {
+  background-color: #1e88e5;
+}
+
+/* MESSAGE AUCUN RÉSULTAT */
+.no-results {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+  font-style: italic;
+  background: #fff;
+  border-radius: 10px;
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* ========================================
+   MODAL FORMULAIRE (POPUP)
+   ======================================== */
+.form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s;
+  overflow-y: auto;
+  padding: 2rem 1rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.form-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: slideUp 0.3s;
+  position: relative;
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bouton fermer X */
+.close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: #ef5350;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  background-color: #e53935;
+  transform: scale(1.1);
+}
+
+/* En-tête du formulaire */
+.form-header {
+  margin-bottom: 1.5rem;
+  padding-right: 2rem;
+}
+
+.form-header h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #222;
+  font-weight: 600;
+}
+
+.form-header p {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Groupes de formulaire */
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.required {
+  color: #ef5350;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #42a5f5;
+  box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.1);
+}
+
+.form-group input.error,
+.form-group select.error {
+  border-color: #ef5350;
+}
+
+.error-message {
+  color: #ef5350;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+/* Ligne de formulaire (2 colonnes) */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Actions du formulaire */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: flex-end;
+}
+
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+  font-size: 1rem;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* ========================================
+   MODAL SUPPRESSION
+   ======================================== */
+.delete-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s;
+}
+
+.delete-box {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  animation: slideUp 0.3s;
+}
+
+.delete-box h3 {
+  margin-bottom: 1rem;
+  color: #222;
+  font-size: 1.5rem;
+}
+
+.delete-box p {
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.delete-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn-cancel {
+  padding: 0.6rem 1.5rem;
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background-color: #5a6268;
+}
+
+.btn-delete {
+  padding: 0.6rem 1.5rem;
+  background-color: #ef5350;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover {
+  background-color: #e53935;
+  box-shadow: 0 4px 12px rgba(239, 83, 80, 0.3);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .prospection-container {
+    padding: 1rem;
+    margin-top: 70px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+  }
+
+  .top-bar input {
+    max-width: 100%;
+  }
+
+  .top-bar .btn-primary {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .prospection-table th, .prospection-table td {
+    padding: 0.7rem 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+  }
+
+  .form-card {
+    padding: 1.5rem;
+    max-height: 85vh;
+  }
+
+  .form-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .prospection-table {
+    font-size: 0.8rem;
+  }
+
+  .prospection-table th {
+    font-size: 0.75rem;
+  }
+
+  .form-modal {
+    padding: 1rem;
+  }
+}
+/* Modal de détails */
+.details-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 700px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Contenu des détails */
+.details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 1rem;
+  padding: 0.875rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+  align-items: start;
+}
+
+.detail-row.full-width {
+  grid-template-columns: 1fr;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #475569;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.detail-label i {
+  color: #3b82f6;
+  font-size: 1rem;
+}
+
+.detail-value {
+  color: #1e293b;
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.detail-description {
+  color: #1e293b;
+  line-height: 1.6;
+  margin: 0.5rem 0 0 0;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Badge de type pour les clients */
+.type-badge {
+  display: inline-block;
+  padding: 0.375rem 0.875rem;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.type-badge.physique {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.type-badge.moral {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+/* Badge de statut (déjà existant mais amélioré) */
+.statut-badge {
+  display: inline-block;
+  padding: 0.375rem 0.875rem;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+/* Responsive pour les détails */
+@media (max-width: 768px) {
+  .details-card {
+    width: 95%;
+    padding: 1.5rem;
+    max-height: 90vh;
+  }
+
+  .detail-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .detail-label {
+    font-size: 0.8125rem;
+  }
+
+  .detail-value {
+    font-size: 0.875rem;
+  }
+}
+
+/* Bouton view (œil) */
+.icon-btn.view {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.icon-btn.view:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b3fa0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}

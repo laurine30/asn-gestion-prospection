@@ -1,0 +1,89 @@
+<div class="message-overlay" *ngIf="message" 
+     [class.success]="message.includes('succès')" 
+     [class.error]="message.includes('Erreur') || message.includes('erreur')">
+  <div class="message-content">
+    <div class="message-icon">
+      <span *ngIf="message.includes('succès')">✓</span>
+      <span *ngIf="message.includes('Erreur') || message.includes('erreur')">!</span>
+    </div>
+    <div class="message-text">{{ message }}</div>
+  </div>
+</div>
+
+
+<div class="page-container">
+  <div class="form-card">
+    <!-- MESSAGE GÉNÉRAL AU DÉBUT DE LA CARTE -->
+    <div class="form-message" *ngIf="message" 
+         [class.success]="message.includes('succès')" 
+         [class.error]="message.includes('Erreur') || message.includes('erreur')">
+      {{ message }}
+    </div>
+
+    <div class="form-header">
+      <h1>Créer un Utilisateur</h1>
+      <p>Remplissez le formulaire pour ajouter un nouvel utilisateur</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #userForm="ngForm">
+
+     <!-- Nom -->
+      <div class="form-group">
+        <label for="nom">Nom</label>
+        <input type="text" id="nom" [(ngModel)]="utilisateur.nom" name="nom" #nomRef="ngModel" required>
+        <div class="error-message" *ngIf="nomRef.invalid && nomRef.touched">
+          Le nom est requis.
+        </div>
+      </div>
+
+      <!-- Prénom -->
+      <div class="form-group">
+        <label for="prenom">Prénom</label>
+        <input type="text" id="prenom" [(ngModel)]="utilisateur.prenom" name="prenom" #prenomRef="ngModel" required>
+        <div class="error-message" *ngIf="prenomRef.invalid && prenomRef.touched">
+          Le prénom est requis.
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" [(ngModel)]="utilisateur.email" name="email" #emailRef="ngModel" required>
+        <div class="error-message" *ngIf="emailRef.invalid && emailRef.touched">
+          <span *ngIf="emailRef.errors?.['required']">L'email est requis.</span>
+          <span *ngIf="emailRef.errors?.['email']">Veuillez entrer un email valide.</span>
+        </div>
+      </div>
+
+      <!-- Mot de passe -->
+      <div class="form-group">
+        <label for="motDePasse">Mot de passe</label>
+        <input id="motDePasse" type="password" [(ngModel)]="utilisateur.motDePasse" name="motDePasse" #motDePasseRef="ngModel" required>
+        <div class="error-message" *ngIf="motDePasseRef.invalid && motDePasseRef.touched">
+          Le mot de passe est requis.
+        </div>
+      </div>
+
+      <!-- Rôle -->
+      <div class="form-group">
+        <label for="role">Rôle</label>
+        <select id="role" [(ngModel)]="utilisateur.role" name="role" #roleRef="ngModel" required>
+          <option [ngValue]="null">Sélectionner un rôle</option>
+          <option *ngFor="let r of roles" [ngValue]="r">
+            {{ r.libRole }}
+          </option>
+        </select>
+        <div class="error-message" *ngIf="roleRef.invalid && roleRef.touched">
+          Veuillez sélectionner un rôle.
+        </div>
+      </div>
+
+      <!-- Bouton de soumission -->
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="!userForm.valid">
+          Créer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

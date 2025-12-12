@@ -13,8 +13,7 @@ export class DashboardComponent {
   stats = [
     { title: 'Prospections', value: 45, color: '#78556f' },
     { title: 'Appels d\'offres', value: 23, color: '#9b7a91' },
-    { title: 'Besoins', value: 67, color: '#bc9fb3' },
-    { title: 'Dossiers en cours', value: 12, color: '#d4c4d0' }
+    { title: 'Dossiers en cours', value: 12, color: '#a7869eff' }
   ];
 
   // Données pour le tableau des appels d'offres récents

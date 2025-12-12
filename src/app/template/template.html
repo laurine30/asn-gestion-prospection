@@ -16,55 +16,69 @@
           <span class="arrow" [class.open]="activeMenu==='parametres'">▶</span>
         </button>
         <div class="dropdown-content" [class.show]="activeMenu==='parametres'">
-          <a href="#">Utilisateur</a>
-          <a href="#">Rôle</a>
-          <a href="#">Client</a>
-          <a href="#">Type</a>
-          <a href="#">Facture</a>
-          <a href="#">Secteur d'activité</a>
-          <a href="#">Paiement</a>
+          <a routerLink="/utilisateur">Gestion utilisateur</a>
+           <a routerLink="/role">Gestionr rôle</a>
+           <a routerLink="/facture">Gestion facture</a>
+         
         </div>
       </div>
 
       <!-- Gestion Prospections & AO -->
       <div class="dropdown">
         <button class="dropbtn" (click)="toggleMenu('gestion', $event)">
-          <!-- Icône de gestion devant le texte -->
           <i class="bi bi-kanban-fill" style="margin-right: 6px;"></i>
           Gestion Prospections & AO
           <span class="arrow" [class.open]="activeMenu==='gestion'">▶</span>
         </button>
         <div class="dropdown-content" [class.show]="activeMenu==='gestion'">
 
-          <!-- Sous-menu Gestion Prospection -->
-          <div class="sub-dropdown">
-            <button class="sub-dropbtn" (click)="toggleSubMenu('gestionProspection', $event)">
-              Gestion Prospection
-              <span class="arrow" [class.open]="activeSubMenu==='gestionProspection'">▶</span>
+
+           <div class="sub-dropdown">
+            <button class="sub-dropbtn" (click)="toggleSubMenu('gestionClient', $event)">
+          <a [routerLink]="['/createClient']">
+              Gestion Client</a>
             </button>
             <div class="sub-dropdown-content" [class.show]="activeSubMenu==='gestionProspection'">
-              <a href="#">Prospection</a>
-              <a href="#">Besoin</a>
-              <a href="#">Service</a>
             </div>
           </div>
 
-          <!-- Sous-menu Gestion Appel d'offres -->
+          
+          <div class="sub-dropdown">
+            <button class="sub-dropbtn" (click)="toggleSubMenu('gestionProspection', $event)">
+          <a [routerLink]="['/liste-prospections']">
+              Gestion Prospection</a>
+            </button>
+            <div class="sub-dropdown-content" [class.show]="activeSubMenu==='gestionProspection'">
+            </div>
+          </div>
+
+          
           <div class="sub-dropdown">
             <button class="sub-dropbtn" (click)="toggleSubMenu('gestionAO', $event)">
               Gestion Appel d'offres
               <span class="arrow" [class.open]="activeSubMenu==='gestionAO'">▶</span>
             </button>
             <div class="sub-dropdown-content" [class.show]="activeSubMenu==='gestionAO'">
-              <a href="#">Appel d'offres</a>
-              <a href="#">Dossier</a>
+                <a [routerLink]="['/enregistrer-ao']">Enregistrer un AO</a>
+                <a [routerLink]="['/dossier-ao']">Créer un dossier de réponse</a>
+             
+            </div>
+          </div>
+
+          <div class="sub-dropdown">
+            <button class="sub-dropbtn" (click)="toggleSubMenu('gestionContrat', $event)">
+          <a [routerLink]="['/contratlist']">
+              Gestion contrat</a>
+            </button>
+            <div class="sub-dropdown-content" [class.show]="activeSubMenu==='gestionContrat'">
             </div>
           </div>
 
         </div>
       </div>
+            
 
-      <!-- Menu Liste -->
+       
       <div class="dropdown">
         <button class="dropbtn" (click)="toggleMenu('liste', $event)">
           <!-- Icône Liste devant le texte -->
@@ -73,15 +87,14 @@
           <span class="arrow" [class.open]="activeMenu==='liste'">▶</span>
         </button>
         <div class="dropdown-content" [class.show]="activeMenu==='liste'">
-          <a href="#">Liste des prospections</a>
-          <a href="#">Liste des besoins</a>
-          <a href="#">Liste des services</a>
-          <a href="#">Liste des appels d'offres</a>
-          <a href="#">Liste des dossiers</a>
+          <a routerLink="/liste-prospections">Liste des Prospections</a>
+          <a routerLink="/createClient">Liste des clients</a>
+          <a routerLink="/Listeao">Listes des appels d'offres</a>
+           <a routerLink="/Listecontrat">Listes des contrats</a>
+           
         </div>
       </div>
 
-      <!-- Menu Analyse -->
       <div class="dropdown">
         <button class="dropbtn" (click)="toggleMenu('analyse', $event)">
           <i class="bi bi-bar-chart" style="margin-right: 6px;"></i>
@@ -89,6 +102,7 @@
           <span class="arrow" [class.open]="activeMenu==='analyse'">▶</span>
         </button>
         <div class="dropdown-content" [class.show]="activeMenu==='analyse'">
+          <a routerLink="/dashboard">Tableau de bord</a>
           <a href="#">Statistiques</a>
           <a href="#">Rapports</a>
         </div>

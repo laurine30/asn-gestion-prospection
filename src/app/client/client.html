@@ -1,0 +1,272 @@
+<div class="page-container">
+
+  <!-- TITRE PRINCIPAL CENTRÉ -->
+  <h1 class="page-title">Liste des Clients</h1>
+
+  <!-- BARRE DE RECHERCHE + BOUTON SUR LA MÊME LIGNE -->
+  <div class="top-bar">
+    <input 
+      type="text" 
+      placeholder="Rechercher par nom, type, téléphone ou email..." 
+      [(ngModel)]="searchTerm" 
+      (input)="filteredClients()"
+    />
+    <button class="btn-primary" (click)="openForm()">
+      <i class="fas fa-plus"></i> Créer un nouveau client
+    </button>
+  </div>
+
+  <!-- TABLEAU DES CLIENTS -->
+  <div class="client-list" *ngIf="clients$ | async as clients">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nom / Entreprise</th>
+          <th>Type</th>
+          <th>Téléphone</th>
+          <th>Email</th>
+          <th>Adresse</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of filteredClients()">
+          <td>{{ c.idClient || '-' }}</td>
+          <td>{{ getClientDisplayName(c) }}</td>
+          <td>{{ c.typeClient }}</td>
+          <td>{{ c.tel || '-' }}</td>
+          <td>{{ c.email || '-' }}</td>
+          <td>{{ c.adresse || '-' }}</td>
+          <td class="actions">
+            <button class="icon-btn edit" (click)="editClient(c)" title="Modifier">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="icon-btn delete" (click)="confirmDelete(c)" title="Supprimer">
+              <i class="bi bi-trash"></i>
+            </button>
+            <button class="icon-btn view" (click)="viewDetails(c)" title="Détails">
+              <i class="bi bi-eye"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 🆕 MODAL DÉTAILS CLIENT -->
+  <div *ngIf="showDetailsModal && clientToView" class="form-modal" (click)="closeDetailsModal()">
+    <div class="details-card" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="closeDetailsModal()" type="button" title="Fermer">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="form-header">
+        <h1><i class="fas fa-user-circle" style="margin-right: 10px;"></i>Détails du Client</h1>
+      </div>
+
+      <div class="details-content">
+        <div class="detail-row">
+          <span class="detail-label"><i class="fas fa-hashtag"></i> ID :</span>
+          <span class="detail-value">{{ clientToView.idClient }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label"><i class="fas fa-tag"></i> Type :</span>
+          <span class="detail-value">
+            <span class="type-badge" [class.physique]="clientToView.typeClient === 'PHYSIQUE'" 
+                  [class.moral]="clientToView.typeClient === 'MORAL'">
+              {{ clientToView.typeClient }}
+            </span>
+          </span>
+        </div>
+
+        <!-- Nom/Prénom pour PHYSIQUE -->
+        <div *ngIf="clientToView.typeClient === 'PHYSIQUE'">
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-user"></i> Nom :</span>
+            <span class="detail-value">{{ clientToView.nom }}</span>
+          </div>
+
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-user"></i> Prénom :</span>
+            <span class="detail-value">{{ clientToView.prenom }}</span>
+          </div>
+        </div>
+
+        <!-- Nom entreprise pour MORAL -->
+        <div *ngIf="clientToView.typeClient === 'MORAL'" class="detail-row">
+          <span class="detail-label"><i class="fas fa-building"></i> Nom de l'entreprise :</span>
+          <span class="detail-value">{{ clientToView.nomEntreprise }}</span>
+        </div>
+
+        <div class="detail-row" *ngIf="clientToView.secteurActivite">
+          <span class="detail-label"><i class="fas fa-briefcase"></i> Secteur d'activité :</span>
+          <span class="detail-value">{{ clientToView.secteurActivite }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label"><i class="fas fa-phone"></i> Téléphone :</span>
+          <span class="detail-value">{{ clientToView.tel }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label"><i class="fas fa-envelope"></i> Email :</span>
+          <span class="detail-value">{{ clientToView.email }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label"><i class="fas fa-map-marker-alt"></i> Adresse :</span>
+          <span class="detail-value">{{ clientToView.adresse }}</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-primary" (click)="closeDetailsModal()">
+          <i class="fas fa-check"></i> Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FORMULAIRE (Création/Modification) -->
+  <div *ngIf="showForm" class="form-modal" (click)="closeModalOnBackdrop($event)">
+    <div class="form-card" (click)="$event.stopPropagation()">
+      
+      <!-- Bouton fermer X -->
+      <button class="close-btn" (click)="resetForm()" type="button">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="form-header">
+        <h1>
+          <i class="fas" [class.fa-user-plus]="!isEditMode" [class.fa-user-edit]="isEditMode" 
+             style="margin-right: 10px;"></i>
+          {{ isEditMode ? 'Modifier le Client' : 'Nouveau Client' }}
+        </h1>
+        <p>{{ isEditMode ? 'Modifiez les informations du client' : 'Enregistrez les informations d\'un nouveau client' }}</p>
+      </div>
+
+      <!-- Message de succès -->
+      <div *ngIf="successMessage" class="success-message">
+        <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
+        {{ successMessage }}
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <!-- Type de client -->
+        <div class="form-group">
+          <label for="typeClient">Type de client <span class="required">*</span></label>
+          <select id="typeClient" formControlName="typeClient" [class.error]="hasError('typeClient')">
+            <option value="">-- Sélectionnez un type --</option>
+            <option value="PHYSIQUE">Physique</option>
+            <option value="MORAL">Moral</option>
+          </select>
+          <span class="error-message" *ngIf="hasError('typeClient')">
+            <i class="fas fa-exclamation-circle"></i> Le type de client est requis
+          </span>
+        </div>
+
+        <!-- Nom / Prénom pour PHYSIQUE -->
+        <div *ngIf="form.value.typeClient === 'PHYSIQUE'">
+          <div class="form-group">
+            <label for="nom">Nom <span class="required">*</span></label>
+            <input type="text" id="nom" formControlName="nom" [class.error]="hasError('nom')"/>
+            <span class="error-message" *ngIf="hasError('nom')">
+              <i class="fas fa-exclamation-circle"></i> Le nom est requis
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="prenom">Prénom <span class="required">*</span></label>
+            <input type="text" id="prenom" formControlName="prenom" [class.error]="hasError('prenom')"/>
+            <span class="error-message" *ngIf="hasError('prenom')">
+              <i class="fas fa-exclamation-circle"></i> Le prénom est requis
+            </span>
+          </div>
+        </div>
+
+        <!-- Nom de l'entreprise pour MORAL -->
+        <div *ngIf="form.value.typeClient === 'MORAL'" class="form-group">
+          <label for="nomEntreprise">Nom de l'entreprise <span class="required">*</span></label>
+          <input type="text" id="nomEntreprise" formControlName="nomEntreprise" [class.error]="hasError('nomEntreprise')"/>
+          <span class="error-message" *ngIf="hasError('nomEntreprise')">
+            <i class="fas fa-exclamation-circle"></i> Le nom de l'entreprise est requis
+          </span>
+        </div>
+
+        <!-- Coordonnées -->
+        <div class="form-group">
+          <label for="secteurActivite">Secteur d'activité</label>
+          <input type="text" id="secteurActivite" formControlName="secteurActivite"/>
+        </div>
+
+        <div class="form-group">
+          <label for="tel">Téléphone <span class="required">*</span></label>
+          <input type="text" id="tel" formControlName="tel" [class.error]="hasError('tel')"/>
+          <span class="error-message" *ngIf="hasError('tel')">
+            <i class="fas fa-exclamation-circle"></i> Le téléphone est requis
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email <span class="required">*</span></label>
+          <input type="email" id="email" formControlName="email" [class.error]="hasError('email')"/>
+          <span class="error-message" *ngIf="hasError('email')">
+            <i class="fas fa-exclamation-circle"></i> L'email est requis
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="adresse">Adresse <span class="required">*</span></label>
+          <input type="text" id="adresse" formControlName="adresse" [class.error]="hasError('adresse')"/>
+          <span class="error-message" *ngIf="hasError('adresse')">
+            <i class="fas fa-exclamation-circle"></i> L'adresse est requise
+          </span>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn-secondary" 
+            (click)="resetForm()"
+            [disabled]="isSubmitting"
+          >
+            <i class="fas fa-times"></i> Annuler
+          </button>
+          <button 
+            type="submit" 
+            class="btn-primary"
+            [disabled]="isSubmitting"
+          >
+            <i class="fas" [class.fa-save]="isEditMode" [class.fa-plus]="!isEditMode"></i>
+            {{ isSubmitting ? 'En cours...' : (isEditMode ? 'Mettre à jour' : 'Créer le client') }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL SUPPRESSION -->
+  <div *ngIf="showDeleteConfirm" class="delete-modal">
+    <div class="delete-box">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #e74c3c;"></i>
+      </div>
+      <h3>Confirmer la suppression ?</h3>
+      <p>Êtes-vous sûr de vouloir supprimer ce client ? Cette action est irréversible.</p>
+      <div class="delete-actions">
+        <button class="btn-cancel" (click)="cancelDelete()">
+          <i class="fas fa-times"></i> Annuler
+        </button>
+        <button class="btn-delete" (click)="deleteClient()">
+          <i class="fas fa-trash"></i> Supprimer définitivement
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

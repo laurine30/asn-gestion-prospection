@@ -1,0 +1,49 @@
+<!-- role.component.html -->
+<div class="page-container">
+  <div class="form-card">
+    <!-- MESSAGE EN HAUT (optionnel) -->
+    <div class="message" *ngIf="message" 
+         [class.success]="message.includes('succès')" 
+         [class.error]="message.includes('Erreur') || message.includes('erreur')">
+      {{ message }}
+    </div>
+
+    <div class="form-header">
+      <h1>Ajouter un Rôle</h1>
+      <p>Créez un nouveau rôle pour les utilisateurs</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #roleForm="ngForm">
+
+      <div class="form-group">
+        <label for="libRole">Libellé du rôle</label>
+        <input type="text" id="libRole" name="libRole" 
+               [(ngModel)]="role.libRole" 
+               #libRoleRef="ngModel"
+               required
+               placeholder="Ex: Administrateur">
+        <div class="error-message" *ngIf="libRoleRef.invalid && libRoleRef.touched">
+          Le libellé du rôle est requis.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="userUpdate">Créé par</label>
+        <input type="text" id="userUpdate" name="userUpdate" 
+               [(ngModel)]="role.userUpdate" 
+               #userUpdateRef="ngModel"
+               required
+               placeholder="Nom de l'utilisateur">
+        <div class="error-message" *ngIf="userUpdateRef.invalid && userUpdateRef.touched">
+          Le nom de l'utilisateur est requis.
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="!roleForm.valid">
+          Enregistrer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

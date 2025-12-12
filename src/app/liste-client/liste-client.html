@@ -1,0 +1,63 @@
+<div class="client-container">
+  <h2 class="title">Liste des Clients</h2>
+
+  <!-- BARRE DE RECHERCHE + BOUTON NOUVEAU CLIENT -->
+  <div class="top-bar">
+    <input 
+      type="text" 
+      placeholder="Rechercher par nom, prénom, entreprise, email ou téléphone..." 
+      [(ngModel)]="searchTerm" 
+      (input)="applyFilter()"
+    />
+    <button class="btn-primary" (click)="createClient()">
+      <i class="fas fa-plus"></i> Nouveau Client
+    </button>
+  </div>
+
+  <!-- TABLE DES CLIENTS -->
+  <table class="client-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom / Prénom</th>
+         <th>Type de Clients</th>
+        <th>Entreprise</th>
+        <th>Email</th>
+        <th>Téléphone</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of filteredClients()">
+        <td>{{ c.idClient || '-' }}</td>
+        <td>{{ c.typeClient === 'PHYSIQUE' ? (c.nom + ' ' + c.prenom) : '-' }}</td>
+        <td>{{ c.typeClient === 'MORAL' ? c.nomEntreprise : '-' }}</td>
+        <td>{{ c.email || '-' }}</td>
+        <td>{{ c.tel || '-' }}</td>
+        <td class="actions">
+          <!-- Modifier -->
+          <button class="icon-btn edit" (click)="editClient(c)" title="Modifier">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+
+          <!-- Supprimer -->
+          <button class="icon-btn delete" (click)="confirmDelete(c)" title="Supprimer">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- MODAL SUPPRESSION -->
+  <div class="delete-modal" *ngIf="showDeleteConfirm">
+    <div class="delete-box">
+      <h3>Confirmer la suppression ?</h3>
+      <p>Voulez-vous vraiment supprimer ce client ?</p>
+      <div class="delete-actions">
+        <button class="btn-cancel action-btn" (click)="cancelDelete()">Annuler</button>
+        <button class="btn-delete action-btn" (click)="deleteClient()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
